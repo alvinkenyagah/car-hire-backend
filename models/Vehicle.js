@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
 const vehicleSchema = new mongoose.Schema({
-  name: String,
-  brand: String,
-  engine: String,
+  name: { type: String, required: true },
+  brand: { type: String, required: true },
+  engine: { type: String, required: true },
 
   images: [String],
 
@@ -19,6 +19,18 @@ const vehicleSchema = new mongoose.Schema({
     type: Number,
     min: 1,
     max: 10
+  },
+
+  // New Fields
+  features: {
+    type: [String],
+    default: [] // empty array by default
+  },
+
+  type: {
+    type: String,
+    enum: ["electric", "petrol", "diesel", "hybrid"],
+    required: true
   }
 }, { timestamps: true });
 

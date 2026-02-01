@@ -4,6 +4,9 @@ const cors = require("cors");
 
 const connectDB = require("./config/db");
 
+const vehicleRoutes = require("./routes/vehicleRoutes");
+
+
 dotenv.config();
 connectDB();
 
@@ -13,10 +16,21 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+
+
+
+
+app.use("/api", vehicleRoutes);
+
+
+
+
 // Routes
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/user", require("./routes/userRoutes"));
+app.use("/api/vehicles", require("./routes/vehicleRoutes"));
 
 // Health check
 app.get("/", (req, res) => {
