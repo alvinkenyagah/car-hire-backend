@@ -27,27 +27,70 @@ exports.getAllVehicles = async (req, res) => {
 // ========================
 // Admin: Create new vehicle
 // ========================
+
+
+
+
+
 exports.createVehicle = async (req, res) => {
   try {
-    const { name, brand, engine, ratePerDay, type, features } = req.body;
-    const images = req.files.map((file) => file.path);
-
-    const vehicle = new Vehicle({
+    const {
       name,
       brand,
       engine,
-      ratePerDay,
       type,
+      ratePerDay,
+      features
+    } = req.body;
+
+    // ✅ Validate required fields early
+    if (!name || !brand || !engine || !type || !ratePerDay) {
+      return res.status(400).json({
+        message: "All required fields must be provided"
+      });
+    }
+
+    // ✅ Extract uploaded images
+    const images = req.files ? req.files.map(file => file.path) : [];
+
+    const vehicle = await Vehicle.create({
+      name,
+      brand,
+      engine,
+      type,
+      ratePerDay,
       features: features ? JSON.parse(features) : [],
-      images,
+      images
     });
 
-    await vehicle.save();
-    res.status(201).json(vehicle);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(201).json({
+      message: "Vehicle added successfully",
+      vehicle
+    });
+  } catch (error) {
+    console.error("Create vehicle error:", error);
+    res.status(500).json({ message: error.message });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // ========================
 // Admin: Update vehicle

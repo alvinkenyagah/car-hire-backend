@@ -10,42 +10,42 @@ const upload = require("../middleware/upload");
 // Public Routes
 // ========================
 
-// Get all available vehicles (no login required)
+// Anyone can view available vehicles without logging in
 router.get("/vehicles", vehicleController.getAvailableVehicles);
 
 // ========================
-// User Routes
+// User Routes (protected)
 // ========================
 
-// Get available vehicles (logged-in users)
+// Logged-in users can view available vehicles
 router.get("/user/vehicles", protect, vehicleController.getAvailableVehicles);
 
 // ========================
-// Admin Routes
+// Admin Routes (protected + RBAC)
 // ========================
 
-// Get all vehicles (admin)
+// Admin: Get all vehicles
 router.get("/admin/vehicles", protect, adminOnly, vehicleController.getAllVehicles);
 
-// Add new vehicle
+// Admin: Add a new vehicle
 router.post(
   "/admin/vehicles",
   protect,
   adminOnly,
-  upload.array("images", 5),
+  upload.array("images", 5), // Multer for up to 5 images
   vehicleController.createVehicle
 );
 
-// Update vehicle
+// Admin: Update vehicle
 router.put(
   "/admin/vehicles/:id",
   protect,
   adminOnly,
-  upload.array("images", 5),
+  upload.array("images", 5), // Optional new images
   vehicleController.updateVehicle
 );
 
-// Delete vehicle
+// Admin: Delete vehicle
 router.delete(
   "/admin/vehicles/:id",
   protect,

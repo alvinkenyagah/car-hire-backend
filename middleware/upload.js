@@ -1,40 +1,31 @@
 const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const cloudinary = require("../config/cloudinary");
+const cloudinary = require("cloudinary").v2;
 
-// Generic Cloudinary storage for any type of upload
+// ✅ IMPORTANT: Explicitly configure cloudinary
+cloudinary.config({
+  cloudinary_url: process.env.CLOUDINARY_URL
+});
+
 const storage = new CloudinaryStorage({
   cloudinary,
-  params: (req, file) => {
-    let folder = "car-hire"; // default folder
+  params: async (req, file) => {
+    let folder = "misc";
 
-    // Custom folder logic based on fieldname
-    switch (file.fieldname) {
-      case "portrait":
-        folder = "users/portrait";
-        break;
-      case "idDocument":
-        folder = "users/id";
-        break;
-      case "drivingLicense":
-        folder = "users/dl";
-        break;
-      case "images":
-        folder = "vehicles";
-        break;
+    if (req.originalUrl.includes("vehicles")) {
+      folder = "vehicles";
+    } else if (req.originalUrl.includes("users")) {
+      folder = "users";
     }
 
     return {
       folder,
-      allowed_formats: ["jpg", "jpeg", "png", "pdf"],
-      public_id: `${file.fieldname}-${Date.now()}`
+      resource_type: "image",
+      allowed_formats: ["jpg", "jpeg", "png", "webp"]
     };
-  },
+  }
 });
 
-const upload = multer({
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
-});
+const upload = multer({ storage });
 
 module.exports = upload;

@@ -18,6 +18,7 @@ exports.register = async (req, res) => {
   res.status(201).json({ message: "Account created, pending approval" });
 };
 
+
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -36,5 +37,13 @@ exports.login = async (req, res) => {
     { expiresIn: "7d" }
   );
 
-  res.json({ token });
+  res.json({
+    token,
+    user: {
+      id: user._id,
+      email: user.email,
+      role: user.role,
+      isApproved: user.isApproved
+    }
+  });
 };
