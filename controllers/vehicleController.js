@@ -24,6 +24,29 @@ exports.getAllVehicles = async (req, res) => {
   }
 };
 
+
+
+// ========================
+// Get single vehicle by ID
+// ========================
+exports.getVehicleById = async (req, res) => {
+  try {
+    const vehicle = await Vehicle.findById(req.params.id);
+    
+    if (!vehicle) {
+      return res.status(404).json({ message: "Vehicle not found" });
+    }
+    
+    res.json(vehicle);
+  } catch (err) {
+    console.error("Get vehicle error:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+
+
 // ========================
 // Admin: Create new vehicle
 // ========================

@@ -27,6 +27,9 @@ router.get("/user/vehicles", protect, vehicleController.getAvailableVehicles);
 // Admin: Get all vehicles
 router.get("/admin/vehicles", protect, adminOnly, vehicleController.getAllVehicles);
 
+// Admin & User: Get single vehicle by ID
+router.get("/vehicles/:id", vehicleController.getVehicleById)
+
 // Admin: Add a new vehicle
 router.post(
   "/admin/vehicles",
