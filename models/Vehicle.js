@@ -5,7 +5,8 @@ const vehicleSchema = new mongoose.Schema({
   brand: { type: String, required: true },
   engine: { type: String, required: true },
 
-  images: { type: String, required: true },
+  images: [String],
+
 
 
   ratePerDay: { type: Number, required: true },

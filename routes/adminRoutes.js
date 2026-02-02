@@ -2,38 +2,56 @@ const express = require("express");
 const router = express.Router();
 
 const adminController = require("../controllers/adminController");
+const vehicleController = require("../controllers/vehicleController"); // ✅ Import vehicle controller
 const { protect } = require("../middleware/auth");
 const { adminOnly } = require("../middleware/rbac");
-const upload = require("../middleware/upload"); // ✅ Import upload
+const upload = require("../middleware/upload");
 
-// ✅ Add upload middleware to handle images
+console.log("✅ Admin routes loaded");
+
+// ============================================
+// VEHICLE MANAGEMENT
+// ✅ These routes handle file uploads properly
+// ============================================
 router.post(
-  "/vehicles", 
-  protect, 
-  adminOnly, 
-  upload.array("images", 5), // ✅ This parses the multipart form data
-  adminController.addVehicle
+  "/vehicles",
+  protect,
+  adminOnly,
+  upload.array("images", 5),  // ✅ Parse multipart/form-data with images
+  vehicleController.createVehicle  // ✅ Use vehicleController
 );
 
 router.put(
-  "/vehicles/:id", 
-  protect, 
+  "/vehicles/:id",
+  protect,
   adminOnly,
-  upload.array("images", 5), // ✅ Also add for updates
-  adminController.updateVehicle
+  upload.array("images", 5),  // ✅ Handle images in updates too
+  vehicleController.updateVehicle
 );
 
-router.delete("/vehicles/:id", protect, adminOnly, adminController.deleteVehicle);
+router.delete(
+  "/vehicles/:id",
+  protect,
+  adminOnly,
+  vehicleController.deleteVehicle
+);
 
-// User management
+// ============================================
+// USER MANAGEMENT
+// ============================================
 router.put("/users/:id/approve", protect, adminOnly, adminController.approveUser);
 router.put("/users/:id/suspend", protect, adminOnly, adminController.suspendUser);
 
-// Hire management
+// ============================================
+// HIRE MANAGEMENT
+// ============================================
 router.put("/hire/:id/approve", protect, adminOnly, adminController.approveHire);
 router.put("/hire/:id/score", protect, adminOnly, adminController.scoreVehicle);
 router.put("/hire/:id/reject", protect, adminOnly, adminController.rejectHire);
 
+// ============================================
+// ADDITIONAL IMAGE UPLOAD (for existing vehicles)
+// ============================================
 router.post(
   "/vehicles/:id/images",
   protect,
