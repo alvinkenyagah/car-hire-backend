@@ -1,13 +1,13 @@
 const cloudinary = require("cloudinary").v2;
 require("dotenv").config();
 
-
-console.log("Cloudinary URL:", process.env.CLOUDINARY_URL);
-
-
 cloudinary.config({ 
-  secure: true,
-  url: process.env.CLOUDINARY_URL
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true
 });
+
+console.log("✅ Cloudinary configured:", cloudinary.config().cloud_name);
 
 module.exports = cloudinary;

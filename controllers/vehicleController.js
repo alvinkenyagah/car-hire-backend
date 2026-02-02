@@ -34,6 +34,9 @@ exports.getAllVehicles = async (req, res) => {
 
 exports.createVehicle = async (req, res) => {
   try {
+    console.log("📝 Request body:", req.body);
+    console.log("📸 Request files:", req.files); // ✅ Check if files are received
+    
     const {
       name,
       brand,
@@ -43,15 +46,16 @@ exports.createVehicle = async (req, res) => {
       features
     } = req.body;
 
-    // ✅ Validate required fields early
     if (!name || !brand || !engine || !type || !ratePerDay) {
       return res.status(400).json({
         message: "All required fields must be provided"
       });
     }
 
-    // ✅ Extract uploaded images
+    // ✅ Extract uploaded images from Cloudinary
     const images = req.files ? req.files.map(file => file.path) : [];
+    
+    console.log("🖼️ Image paths from Cloudinary:", images); // ✅ Check Cloudinary URLs
 
     const vehicle = await Vehicle.create({
       name,
@@ -63,16 +67,17 @@ exports.createVehicle = async (req, res) => {
       images
     });
 
+    console.log("✅ Vehicle created:", vehicle);
+
     res.status(201).json({
       message: "Vehicle added successfully",
       vehicle
     });
   } catch (error) {
-    console.error("Create vehicle error:", error);
+    console.error("❌ Create vehicle error:", error);
     res.status(500).json({ message: error.message });
   }
 };
-
 
 
 
