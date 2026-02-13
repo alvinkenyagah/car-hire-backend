@@ -6,6 +6,8 @@ const { protect } = require("../middleware/auth");
 const { userOnly } = require("../middleware/rbac");
 
 router.put("/profile", protect, userOnly, userController.updateProfile);
+router.get("/profile", protect, userOnly, userController.getProfile);
+
 router.get("/vehicles", protect, userOnly, userController.getVehicles);
 router.post("/hire", protect, userOnly, userController.hireVehicle);
 router.get("/hire", protect, userOnly, userController.myHires);

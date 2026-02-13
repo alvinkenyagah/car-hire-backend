@@ -4,13 +4,35 @@ const Hire = require("../models/Hire");
 const dayjs = require("dayjs");
 
 exports.updateProfile = async (req, res) => {
-  const user = await User.findByIdAndUpdate(
-    req.user.id,
-    req.body,
-    { new: true }
-  );
+  try {
+    const updates = {};
+
+    // ✅ Only allow name and phone updates
+    if (req.body.name) updates.name = req.body.name;
+    if (req.body.phone) updates.phone = req.body.phone;
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      updates,
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    res.json(user);
+
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update profile" });
+  }
+};
+
+
+
+
+exports.getProfile = async (req, res) => {
+  const user = await User.findById(req.user.id).select("-password");
   res.json(user);
 };
+
+
 
 exports.getVehicles = async (req, res) => {
   const vehicles = await Vehicle.find({ status: "available" });
