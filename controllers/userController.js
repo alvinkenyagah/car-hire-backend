@@ -5,19 +5,30 @@ const dayjs = require("dayjs");
 
 exports.updateProfile = async (req, res) => {
   try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     const updates = {};
 
-    // ✅ Only allow name and phone updates
+    // ✅ Always allow name & phone updates
     if (req.body.name) updates.name = req.body.name;
     if (req.body.phone) updates.phone = req.body.phone;
 
-    const user = await User.findByIdAndUpdate(
+    // ✅ Allow ID number only if not already set
+    if (!user.idNumber && req.body.idNumber) {
+      updates.idNumber = req.body.idNumber;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
       updates,
       { new: true, runValidators: true }
     ).select("-password");
 
-    res.json(user);
+    res.json(updatedUser);
 
   } catch (err) {
     res.status(500).json({ message: "Failed to update profile" });
