@@ -36,11 +36,27 @@ router.delete(
   vehicleController.deleteVehicle
 );
 
+
+
+
+
+
+
+
 // ============================================
 // USER MANAGEMENT
 // ============================================
 router.put("/users/:id/approve", protect, adminOnly, adminController.approveUser);
 router.put("/users/:id/suspend", protect, adminOnly, adminController.suspendUser);
+
+
+
+// routes/adminRoutes.js
+router.get("/users", protect, adminOnly, adminController.getAllUsers);
+router.put("/users/:id/approve", protect, adminOnly, adminController.approveUser);
+router.put("/users/:id/suspend", protect, adminOnly, adminController.suspendUser);
+
+
 
 // ============================================
 // HIRE MANAGEMENT

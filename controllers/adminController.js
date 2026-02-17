@@ -117,3 +117,58 @@ exports.uploadVehicleImages = async (req, res) => {
 
   res.json(vehicle);
 };
+
+
+
+exports.updateHireStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    const hire = await Hire.findById(req.params.id)
+      .populate("vehicle");
+
+    if (!hire)
+      return res.status(404).json({ message: "Hire not found" });
+
+    hire.status = status;
+
+    // If approved → mark vehicle unavailable
+    if (status === "approved") {
+      hire.vehicle.isAvailable = false;
+      await hire.vehicle.save();
+    }
+
+    await hire.save();
+
+    res.json(hire);
+
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update hire" });
+  }
+};
+
+
+
+exports.getAllHires = async (req, res) => {
+  const hires = await Hire.find()
+    .populate("user", "name email phone")
+    .populate("vehicle", "name brand");
+
+  res.json(hires);
+};
+
+
+exports.getAllUsers = async (req, res) => {
+  const users = await User.find().select("-password");
+  res.json(users);
+};
+
+exports.approveUser = async (req, res) => {
+  await User.findByIdAndUpdate(req.params.id, { isVerified: true });
+  res.json({ message: "User verified" });
+};
+
+exports.suspendUser = async (req, res) => {
+  await User.findByIdAndUpdate(req.params.id, { isSuspended: true });
+  res.json({ message: "User suspended" });
+};

@@ -55,6 +55,16 @@ app.use("/api", vehicleRoutes);         // public + protected vehicles
 
 console.log("✅ Routes mounted");
 
+
+
+const hireRoutes = require("./routes/hireRoutes");
+
+app.use("/api/hires", hireRoutes);
+
+
+
+
+
 // ===============================
 // Health Check
 // ===============================
